@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <style>
+    .todo-text {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px;
+    }
+  </style>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+  </head>
+  <body style="max-width: 220px">
+    <h1>TODO</h1>
+    <form id="todo-form">
+      <input id="todo-input" type="text" />
+      <button type="submit">확인</button>
+    </form>
+    <ul id="todo-list"></ul>
+  </body>
+  <script>
+    document.addEventListener("DOMContentLoaded", (e) => {
+      const todoForm = document.getElementById("todo-form");
+      const todoInput = document.getElementById("todo-input");
+      const todoList = document.getElementById("todo-list");
+      let todos = [];
+
+      const submit = (e) => {
+        e.preventDefault();
+
+        if (todoInput.value == "") return;
+        if (todos.includes(todoInput.value)) return;
+
+        todos.push(todoInput.value);
+        todoList.innerHTML = todos
+          .map(
+            (todo) => `
+                <div class="todo-text">
+                  <li>${todo}</li>
+                  <i class="fas fa-trash-alt"></i>
+                </div>`
+          )
+          .join("");
+
+        todoInput.value = "";
+      };
+      const deleteTodo = (e) => {
+        if (e.target.classList.contains("fa-trash-alt")) {
+          const todo = e.target.parentElement;
+          const text = todo.querySelector("li").innerText;
+
+          todos = todos.filter((todo) => todo != text);
+          todo.remove();
+        }
+      };
+
+      todoForm.addEventListener("submit", submit);
+      todoList.addEventListener("click", deleteTodo);
+    });
+  </script>
+</html>

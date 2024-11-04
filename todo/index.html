@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>Todo List App</h1>
+    <form id="todo-form">
+      <input id="todo-input" type="text" />
+      <button id="btn" type="submit">확인</button>
+    </form>
+    <ul id="todo-list"></ul>
+    <script>
+      document.addEventListener("DOMContentLoaded", (e) => {
+        const todoForm = document.getElementById("todo-form");
+        const todoInput = document.getElementById("todo-input");
+        const todoList = document.getElementById("todo-list");
+
+        let todos = [];
+        todoForm.addEventListener("submit", (event) => {
+          event.preventDefault();
+          todos.push(todoInput.value);
+          todoInput.value = "";
+          todoList.innerHTML = todos
+            .map((todo) => {
+              return `<li>${todo}</li>`;
+            })
+            .join("");
+        });
+      });
+    </script>
+  </body>
+</html>
