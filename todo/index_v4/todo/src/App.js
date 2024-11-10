@@ -1,11 +1,10 @@
-import logo from "./logo.svg";
-import "./App.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faX } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import './App.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faX } from '@fortawesome/free-solid-svg-icons';
+import { useState } from 'react';
 
 function App() {
-  const [text, setText] = useState("");
+  const [text, setText] = useState('');
   const [items, setItems] = useState([]);
 
   const inputTextChange = (e) => {
@@ -13,15 +12,26 @@ function App() {
   };
 
   const addButtonClick = () => {
-    if (text === "") return;
+    if (text === '') return;
+    if (items.filter((item) => item.text === text).length > 0) return;
 
-    setItems([...items, text]);
-    setText("");
-    console.log("items", items);
+    setItems([...items, { text, isDone: false }]);
+    setText('');
   };
 
   const deleteButtonClick = (selectedItem) => () => {
-    setItems(items.filter((item) => item !== selectedItem));
+    setItems(items.filter((item) => item.text !== selectedItem.text));
+  };
+
+  const toggleButtonClick = (selectedItem) => () => {
+    setItems(
+      items.map((item) => {
+        if (item.text === selectedItem.text) {
+          return { ...item, isDone: !item.isDone };
+        }
+        return item;
+      })
+    );
   };
 
   const itemShow = (items) => {
@@ -29,14 +39,17 @@ function App() {
       return (
         <li
           className="flex items-center justify-between w-full my-8"
-          key={item}
+          key={item.text}
         >
           <img
             className="h-[27px] w-[28px]"
-            src="/images/unchecked.png"
+            src={item.isDone ? '/images/checked.png' : '/images/unchecked.png'}
             alt="unchecked"
+            onClick={toggleButtonClick(item)}
           ></img>
-          <p className="ml-4 flex-1">{item}</p>
+          <p className={`ml-4 flex-1 ${item.isDone ? 'line-through' : ''}`}>
+            {item.text}
+          </p>
           <FontAwesomeIcon
             className="px-4"
             icon={faX}
