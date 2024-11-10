@@ -2,8 +2,51 @@ import logo from "./logo.svg";
 import "./App.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
+import { useState } from "react";
 
 function App() {
+  const [text, setText] = useState("");
+  const [items, setItems] = useState([]);
+
+  const inputTextChange = (e) => {
+    setText(e.target.value);
+  };
+
+  const addButtonClick = () => {
+    if (text === "") return;
+
+    setItems([...items, text]);
+    setText("");
+    console.log("items", items);
+  };
+
+  const deleteButtonClick = (selectedItem) => () => {
+    setItems(items.filter((item) => item !== selectedItem));
+  };
+
+  const itemShow = (items) => {
+    return items.map((item) => {
+      return (
+        <li
+          className="flex items-center justify-between w-full my-8"
+          key={item}
+        >
+          <img
+            className="h-[27px] w-[28px]"
+            src="/images/unchecked.png"
+            alt="unchecked"
+          ></img>
+          <p className="ml-4 flex-1">{item}</p>
+          <FontAwesomeIcon
+            className="px-4"
+            icon={faX}
+            onClick={deleteButtonClick(item)}
+          />
+        </li>
+      );
+    });
+  };
+
   return (
     <main className="flex flex-col items-center bg-gradient-to-r from-[#153677] to-[#4e085f] w-full min-h-screen p-[10px]">
       <div className="w-full max-w-[540px] bg-white pt-[40px] px-[30px] py-[70px] rounded-[10px]">
@@ -17,24 +60,19 @@ function App() {
         </div>
         <div className="flex items-center justify-between bg-[#edeef0] rounded-[30px] text-[14px] pl-[20px]">
           <input
-            className="bg-transparent border-none outline-none p-[14px]"
+            className="bg-transparent border-none outline-none p-[14px] w-full"
             placeholder="Add your text"
+            onChange={inputTextChange}
+            value={text}
           ></input>
-          <button className="bg-[#ff5945] rounded-[40px] px-[50px] py-[16px] text-white">
+          <button
+            className="bg-[#ff5945] rounded-[40px] px-[50px] py-[16px] text-white font-bold"
+            onClick={addButtonClick}
+          >
             Add
           </button>
         </div>
-        <ul>
-          <li className="flex items-center justify-between w-full my-4 p-[14px]">
-            <img
-              className="h-[27px] w-[28px]"
-              src="/images/unchecked.png"
-              alt="unchecked"
-            ></img>
-            <p className="ml-4 flex-1">fe</p>
-            <FontAwesomeIcon icon={faX} />
-          </li>
-        </ul>
+        <ul>{itemShow(items)}</ul>
       </div>
     </main>
   );
