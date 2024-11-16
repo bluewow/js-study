@@ -37,62 +37,84 @@ function App() {
   return (
     <main className="flex flex-col items-center bg-gradient-to-r from-[#153677] to-[#4e085f] w-full min-h-screen p-[10px]">
       <div className="w-full max-w-[540px] bg-white pt-[40px] px-[30px] py-[70px] rounded-[10px]">
-        <div className="flex items-center mb-[20px]">
-          <h1 className="text-2xl font-bold">To-Do List</h1>
-          <img
-            className="w-[30px] ml-2"
-            src="/images/icon.png"
-            alt="todo-icon"
-          ></img>
-        </div>
-        <div className="flex items-center justify-between bg-[#edeef0] rounded-[30px] text-[14px] pl-[20px]">
-          <input
-            className="bg-transparent border-none outline-none p-[14px] w-full"
-            placeholder="Add your text"
-            onChange={inputTextChange}
-            value={text}
-          ></input>
-          <button
-            className="bg-[#ff5945] rounded-[40px] px-[50px] py-[16px] text-white font-bold"
-            onClick={addButtonClick}
-          >
-            Add
-          </button>
-        </div>
-        <ul>
-          {items.map((item) => {
-            return (
-              <li
-                className="flex items-center justify-between w-full my-8"
-                key={item.text}
-              >
-                <img
-                  className="h-[27px] w-[28px]"
-                  src={
-                    item.isDone
-                      ? "/images/checked.png"
-                      : "/images/unchecked.png"
-                  }
-                  alt="unchecked"
-                  onClick={toggleButtonClick(item)}
-                ></img>
-                <p
-                  className={`ml-4 flex-1 ${item.isDone ? "line-through" : ""}`}
-                >
-                  {item.text}
-                </p>
-                <FontAwesomeIcon
-                  className="px-4"
-                  icon={faX}
-                  onClick={deleteButtonClick(item)}
-                />
-              </li>
-            );
-          })}
-        </ul>
+        <Header />
+        <InputField
+          text={text}
+          inputTextChange={inputTextChange}
+          addButtonClick={addButtonClick}
+        />
+
+        <ItemList
+          items={items}
+          toggleButtonClick={toggleButtonClick}
+          deleteButtonClick={deleteButtonClick}
+        />
       </div>
     </main>
   );
 }
 
+const Header = () => {
+  return (
+    <div className="flex items-center mb-[20px]">
+      <h1 className="text-2xl font-bold">To-Do List</h1>
+      <img
+        className="w-[30px] ml-2"
+        src="/images/icon.png"
+        alt="todo-icon"
+      ></img>
+    </div>
+  );
+};
+
+const InputField = ({ text, inputTextChange, addButtonClick }) => {
+  return (
+    <div className="flex items-center justify-between bg-[#edeef0] rounded-[30px] text-[14px] pl-[20px]">
+      <input
+        className="bg-transparent border-none outline-none p-[14px] w-full"
+        placeholder="Add your text"
+        onChange={inputTextChange}
+        value={text}
+      ></input>
+      <button
+        className="bg-[#ff5945] rounded-[40px] px-[50px] py-[16px] text-white font-bold"
+        onClick={addButtonClick}
+      >
+        Add
+      </button>
+    </div>
+  );
+};
+
+const ItemList = ({ items, toggleButtonClick, deleteButtonClick }) => {
+  return (
+    <ul>
+      {items.map((item) => {
+        return (
+          <li
+            className="flex items-center justify-between w-full my-8"
+            key={item.text}
+          >
+            <img
+              className="h-[27px] w-[28px]"
+              src={
+                item.isDone ? "/images/checked.png" : "/images/unchecked.png"
+              }
+              alt="unchecked"
+              onClick={toggleButtonClick(item)}
+            ></img>
+            <p className={`ml-4 flex-1 ${item.isDone ? "line-through" : ""}`}>
+              {item.text}
+            </p>
+            <FontAwesomeIcon
+              className="px-4"
+              icon={faX}
+              onClick={deleteButtonClick(item)}
+            />
+          </li>
+        );
+      })}
+    </ul>
+  );
+};
 export default App;
