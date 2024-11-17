@@ -67,18 +67,18 @@ const Header = () => {
   );
 };
 
-const InputField = ({ text, inputTextChange, addButtonClick }) => {
+const InputField = (props) => {
   return (
     <div className="flex items-center justify-between bg-[#edeef0] rounded-[30px] text-[14px] pl-[20px]">
       <input
         className="bg-transparent border-none outline-none p-[14px] w-full"
         placeholder="Add your text"
-        onChange={inputTextChange}
-        value={text}
+        onChange={props.inputTextChange}
+        value={props.text}
       ></input>
       <button
         className="bg-[#ff5945] rounded-[40px] px-[50px] py-[16px] text-white font-bold"
-        onClick={addButtonClick}
+        onClick={props.addButtonClick}
       >
         Add
       </button>
@@ -86,10 +86,10 @@ const InputField = ({ text, inputTextChange, addButtonClick }) => {
   );
 };
 
-const ItemList = ({ items, toggleButtonClick, deleteButtonClick }) => {
+const ItemList = (props) => {
   return (
     <ul>
-      {items.map((item) => {
+      {props.items.map((item) => {
         return (
           <li
             className="flex items-center justify-between w-full my-8"
@@ -101,7 +101,7 @@ const ItemList = ({ items, toggleButtonClick, deleteButtonClick }) => {
                 item.isDone ? "/images/checked.png" : "/images/unchecked.png"
               }
               alt="unchecked"
-              onClick={toggleButtonClick(item)}
+              onClick={props.toggleButtonClick(item)}
             ></img>
             <p className={`ml-4 flex-1 ${item.isDone ? "line-through" : ""}`}>
               {item.text}
@@ -109,7 +109,7 @@ const ItemList = ({ items, toggleButtonClick, deleteButtonClick }) => {
             <FontAwesomeIcon
               className="px-4"
               icon={faX}
-              onClick={deleteButtonClick(item)}
+              onClick={props.deleteButtonClick(item)}
             />
           </li>
         );
