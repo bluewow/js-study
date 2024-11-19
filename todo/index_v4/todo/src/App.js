@@ -1,11 +1,28 @@
 import "./App.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faX } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import {
+  faX,
+  faEdit,
+  faCancel,
+  faSave,
+} from "@fortawesome/free-solid-svg-icons";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 function App() {
   const [text, setText] = useState("");
   const [items, setItems] = useState([]);
+
+  const onEdit = (originTodo, editTodo) => {
+    // items.reduce(items, {})
+    setItems(
+      items.map((item) => {
+        if (item.text === originTodo) {
+          return { ...item, text: editTodo };
+        }
+        return item;
+      })
+    );
+  };
 
   const inputTextChange = (e) => {
     setText(e.target.value);
@@ -43,12 +60,14 @@ function App() {
           inputTextChange={inputTextChange}
           addButtonClick={addButtonClick}
         />
-
-        <ItemList
-          items={items}
-          toggleButtonClick={toggleButtonClick}
-          deleteButtonClick={deleteButtonClick}
-        />
+        {items.map((item) => (
+          <ItemList
+            item={item}
+            toggleButtonClick={toggleButtonClick}
+            deleteButtonClick={deleteButtonClick}
+            onEdit={onEdit}
+          />
+        ))}
       </div>
     </main>
   );
@@ -86,35 +105,68 @@ const InputField = (props) => {
   );
 };
 
-const ItemList = (props) => {
+const ItemList = ({ item, toggleButtonClick, deleteButtonClick, onEdit }) => {
+  const inputRef = useRef(null);
+  const [edit, setEdit] = useState(false);
+
+  const setValue = useCallback(() => {
+    inputRef.current.value = item.text;
+  }, [item.text]);
+
+  useEffect(() => {
+    setValue();
+  }, [setValue]);
+
+  const toggleEdit = () => {
+    setEdit(!edit);
+  };
+
+  const onSave = (e) => {
+    setEdit(false);
+    onEdit(item.text, inputRef.current.value);
+  };
+
+  const onCancel = () => {
+    setEdit(false);
+    setValue();
+  };
+
   return (
-    <ul>
-      {props.items.map((item) => {
-        return (
-          <li
-            className="flex items-center justify-between w-full my-8"
-            key={item.text}
-          >
-            <img
-              className="h-[27px] w-[28px]"
-              src={
-                item.isDone ? "/images/checked.png" : "/images/unchecked.png"
-              }
-              alt="unchecked"
-              onClick={props.toggleButtonClick(item)}
-            ></img>
-            <p className={`ml-4 flex-1 ${item.isDone ? "line-through" : ""}`}>
-              {item.text}
-            </p>
-            <FontAwesomeIcon
-              className="px-4"
-              icon={faX}
-              onClick={props.deleteButtonClick(item)}
-            />
-          </li>
-        );
-      })}
-    </ul>
+    <li
+      className="flex items-center justify-between w-full my-8"
+      key={item.text}
+    >
+      <img
+        className="h-[27px] w-[28px]"
+        src={item.isDone ? "/images/checked.png" : "/images/unchecked.png"}
+        alt="unchecked"
+        onClick={toggleButtonClick(item)}
+      ></img>
+
+      <input
+        className={item.isDone ? "line-through" : ""}
+        ref={inputRef}
+        disabled={!edit}
+      ></input>
+
+      {edit ? (
+        <div>
+          <FontAwesomeIcon className="px-4" icon={faSave} onClick={onSave} />
+          <FontAwesomeIcon
+            className="px-4"
+            icon={faCancel}
+            onClick={onCancel}
+          />
+        </div>
+      ) : (
+        <FontAwesomeIcon className="px-4" icon={faEdit} onClick={toggleEdit} />
+      )}
+      <FontAwesomeIcon
+        className="px-4"
+        icon={faX}
+        onClick={deleteButtonClick(item)}
+      />
+    </li>
   );
 };
 export default App;
